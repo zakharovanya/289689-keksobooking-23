@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Anna Zakharova](https://up.htmlacademy.ru/javascript/23/user/289689).
-* Наставник: `Неизвестно`.
+* Наставник: [Даниил Царёв](https://htmlacademy.ru/profile/id945835).
 
 ---
 
