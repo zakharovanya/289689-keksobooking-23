@@ -1,20 +1,14 @@
-const getRandomInteget = function (min,max) {
+const getRandomInteget = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  if (min >= max) {
-    return Math.floor(Math.random() * (min - max + 1)) + max;
-  }
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  const randomInteget = Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.abs(randomInteget);
+};
+
+const getRandomNumber = function (min = 0, max = 10, precision = 3) {
+  const randomNumber = (Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision));
+  return Math.abs(randomNumber);
 };
 
 getRandomInteget();
-
-const getRandomNumber = function (min,max,numbers) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  numbers = numbers || 0;
-  const randomNumber = Math.random() * (max - min + 1) + min;
-  return randomNumber.toFixed(numbers);
-};
-
 getRandomNumber();
