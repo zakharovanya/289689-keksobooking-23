@@ -10,7 +10,7 @@ getRandomInteger();
 getRandomNumber();
 
 const createAvatarLink = function () {
-  const avatarLink = (number) => {
+  const avatarLink = function (number) {
     return this.url + number + this.filetype;
   };
 
@@ -92,16 +92,19 @@ const location = {
 
 const SIMILAR_OBJECT_COUNT = 10;
 
-const getRandomArrayElement = (elements) => {
+const getRandomArrayElement = function (elements) {
   return elements[getRandomInteger(0, elements.length - 1)];
 };
 
-const createObject = () => {
+const createObject = function () {
   return {
     author: getRandomArrayElement(avatar.createAvatarLink()),
-    offer: getRandomArrayElement(title) + getRandomArrayElement(address) + getRandomArrayElement(type) + getRandomArrayElement(rooms) +  getRandomArrayElement(guests) + getRandomArrayElement(checkin) + getRandomArrayElement(checkout)+ getRandomArrayElement(features) + getRandomArrayElement(description) + getRandomArrayElement(photos),
+    offer: getRandomArrayElement(title) + getRandomArrayElement(address) + getRandomArrayElement(price) + getRandomArrayElement(type) + getRandomArrayElement(rooms) +  getRandomArrayElement(guests) + getRandomArrayElement(checkin) + getRandomArrayElement(checkout)+ getRandomArrayElement(features) + getRandomArrayElement(description) + getRandomArrayElement(photos),
     location: getRandomArrayElement(location),
-  },
+  };
 };
 
 const similarObjects = new Array(SIMILAR_OBJECT_COUNT).fill(null).map(() => createObject());
+
+similarObjects ();
+
