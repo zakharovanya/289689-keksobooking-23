@@ -1,44 +1,41 @@
-const getRandomNumber = function (min = 0, max = 10, precision = 3) {
-  return (Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision));
-};
+const getRandomNumber = (min = 0, max = 10, precision = 3) => (Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision));
 
-const getRandomInteger = function (min = 0, max = 10) {
-  return getRandomNumber(min, max, 0);
-};
+const getRandomInteger = (min = 0, max = 10) => getRandomNumber(min, max, 0);
 
 getRandomInteger();
 getRandomNumber();
 
-const createAvatarLink = function () {
-  const avatarLink = function (number) {
-    return this.url + number + this.filetype;
-  };
-
-  this.number.forEach(avatarLink);
+const createAvatar = () => {
+  const avatarArray = [];
+  for (let i = 1; i <= 10; i++) {
+    avatarArray.push(`img/avatars/user0${[i]}.png`);
+  }
+  return avatarArray;
 };
 
-const avatar = {
-  url: 'img/avatars/user0',
-  number: getRandomInteger(1, 8),
-  filetype: '.png',
-  createAvatarLink,
+const AVATAR = createAvatar();
+
+const createTitle = () => {
+  const titleArray = [];
+  for (let i = 1; i <= 10; i++) {
+    titleArray.push(`Заголовок ${[i]}`);
+  }
+  return titleArray;
 };
 
-const title = [
-  'Заголовок 1',
-  'Заголовок 2',
-  'Заголовок 3',
-  'Заголовок 4',
-];
+const TITLE = createTitle();
 
-const address = {
-  horizontal: getRandomNumber(),
-  vertical: getRandomNumber(),
+const getAddress = () => {
+  const horizontal = getRandomNumber();
+  const vertical = getRandomNumber();
+  return `${horizontal}, ${vertical}`;
 };
 
-const price = getRandomInteger();
+const ADDRESS = new Array(10).fill(null).map(() => getAddress());
 
-const type = [
+const PRICE = new Array(10).fill(null).map(() => getRandomInteger());
+
+const TYPE = [
   'palace',
   'flat',
   'house',
@@ -46,23 +43,19 @@ const type = [
   'hotel',
 ];
 
-const rooms = getRandomInteger();
+const ROOMS = new Array(10).fill(null).map(() => getRandomInteger());
 
-const guests = getRandomInteger();
+const GUESTS = new Array(10).fill(null).map(() => getRandomInteger());
 
-const checkin = [
+const CHEKIN = [
   '12:00',
   '13:00',
   '14:00',
 ];
 
-const checkout = [
-  '12:00',
-  '13:00',
-  '14:00',
-];
+const CHEKOUT = CHEKIN;
 
-const features = [
+const FEATURES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -71,40 +64,42 @@ const features = [
   'conditioner',
 ];
 
-const description = [
-  'Описание 1',
-  'Описание 2',
-  'Описание 3',
-  'Описание 4',
-  'Описание 5',
-];
+const createDescription = () => {
+  const descriptionArray = [];
+  for (let i = 1; i <= 10; i++) {
+    descriptionArray.push(`Заголовок ${[i]}`);
+  }
+  return descriptionArray;
+};
 
-const photos = [
+const DESCRIPTION = createDescription();
+
+const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-const location = {
-  lat: getRandomNumber(35.65, 35.7, 5),
-  lng: getRandomNumber(139.7, 139.8, 5),
+const getLocation = () => {
+  const lat = getRandomNumber(35.65, 35.7, 5);
+  const lng = getRandomNumber(139.7, 139.8, 5);
+  return `${lat  }, ${  lng}`;
 };
 
-const SIMILAR_OBJECT_COUNT = 10;
+const LOCATION = new Array(10).fill(null).map(() => getLocation());
 
-const getRandomArrayElement = function (elements) {
-  return elements[getRandomInteger(0, elements.length - 1)];
-};
+const SIMILAR_OFFERS_COUNT = 10;
 
-const createObject = function () {
+const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+
+const createOffers = function () {
   return {
-    author: getRandomArrayElement(avatar.createAvatarLink()),
-    offer: getRandomArrayElement(title) + getRandomArrayElement(address) + getRandomArrayElement(price) + getRandomArrayElement(type) + getRandomArrayElement(rooms) +  getRandomArrayElement(guests) + getRandomArrayElement(checkin) + getRandomArrayElement(checkout)+ getRandomArrayElement(features) + getRandomArrayElement(description) + getRandomArrayElement(photos),
-    location: getRandomArrayElement(location),
+    author: getRandomArrayElement(AVATAR),
+    offer: getRandomArrayElement(TITLE) + getRandomArrayElement(ADDRESS) + getRandomArrayElement(PRICE) + getRandomArrayElement(TYPE) + getRandomArrayElement(ROOMS) +  getRandomArrayElement(GUESTS) + getRandomArrayElement(CHEKIN) + getRandomArrayElement(CHEKOUT)+ getRandomArrayElement(FEATURES) + getRandomArrayElement(DESCRIPTION) + getRandomArrayElement(PHOTOS),
+    location: getRandomArrayElement(LOCATION),
   };
 };
 
-const similarObjects = new Array(SIMILAR_OBJECT_COUNT).fill(null).map(() => createObject());
+const similarOffers = new Array(SIMILAR_OFFERS_COUNT).fill(null).map(() => createOffers());
 
-similarObjects ();
-
+similarOffers ();
