@@ -1,43 +1,7 @@
-const OFFER_TYPES = [
-  'palace',
-  'flat',
-  'house',
-  'bungalow',
-  'hotel',
-];
-
-const CHECKINS = [
-  '12:00',
-  '13:00',
-  '14:00',
-];
-
-const FEATURES = [
-  'wifi',
-  'dishwasher',
-  'parking',
-  'washer',
-  'elevator',
-  'conditioner',
-];
-
-const PHOTOS = [
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
-];
-
-const SIMILAR_OFFERS_COUNT = 10;
-
-const getRandomNumber = (min = 0, max = 10, precision = 3) => (Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision));
-
-const getRandomInteger = (min = 0, max = 10) => getRandomNumber(min, max, 0);
-
-const getRandomArray = (array) => array.slice(0, getRandomInteger(1, array.length - 1));
-
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
-
-const addLeadingZeroIfNeeded = (number) => number < 10 ? `0${number}` : `${number}`;
+import {OFFER_TYPES, CHECKINS, FEATURES, PHOTOS, SIMILAR_OFFERS_COUNT} from './mocks.js';
+import {getRandomNumber, getRandomInteger, getRandomArray, getRandomArrayElement, addLeadingZeroIfNeeded} from './util.js';
+import './map.js';
+import './popup.js';
 
 const generateOffer = () => {
   const offerlocation = {
@@ -71,4 +35,4 @@ const generateOffers = (amount) => new Array(amount).fill(null).map(generateOffe
 
 const similarOffers = generateOffers(SIMILAR_OFFERS_COUNT);
 
-similarOffers();
+similarOffers;
