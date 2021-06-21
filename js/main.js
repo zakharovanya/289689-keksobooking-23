@@ -36,3 +36,5 @@ const generateOffers = (amount) => new Array(amount).fill(null).map(generateOffe
 const similarOffers = generateOffers(SIMILAR_OFFERS_COUNT);
 
 similarOffers;
+
+export {similarOffers};
