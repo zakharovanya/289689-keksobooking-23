@@ -1,4 +1,4 @@
-const getRandomNumber = (min = 0, max = 10, precision = 3) => (Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision));
+const getRandomNumber = (min = 0, max = 10, precision = 3) => Number((Math.random() * (max - min + 1) + min).toFixed(Math.abs(precision)));
 
 const getRandomInteger = (min = 0, max = 10) => getRandomNumber(min, max, 0);
 
