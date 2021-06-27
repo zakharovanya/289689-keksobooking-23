@@ -1,5 +1,6 @@
 import {showPopup} from './popup.js';
 import {generateOffer} from './mocks.js';
+import './form.js';
 
 const OFFERS_COUNT = 10;
 
