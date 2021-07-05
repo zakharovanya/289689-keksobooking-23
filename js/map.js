@@ -1,4 +1,4 @@
-const setmapFilterEnabled = (enabled) => {
+const setMapFilterEnabled = (enabled) => {
   const mapFilterDisabled = document.querySelector('.map__filters');
   if (enabled) {
     mapFilterDisabled.classList.remove('map__filters--disabled');
@@ -13,4 +13,4 @@ const setmapFilterEnabled = (enabled) => {
   }
 };
 
-export {setmapFilterEnabled};
+export {setMapFilterEnabled};
