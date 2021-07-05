@@ -13,31 +13,21 @@ const offerTitle = document.querySelector('#title');
 const offerPrice = document.querySelector('#price');
 const roomsSelect = document.querySelector('#room__number');
 
-const adFormDisabled = document.querySelector('.ad-form');
-adFormDisabled.classList.add('ad-form--disabled');
-adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
-  fielsetForm.classList.add('disabled');
-});
-
-const mapFilterDisabled = document.querySelector('.map__filters');
-mapFilterDisabled.classList.add('map__filters--disabled');
-mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
-  selectFilter.classList.add('disabled');
-});
-
-const getActiveForm = (fielsetForm) => {
-  adFormDisabled.addEventListener('mouseover', () => {
+const setAdFormEnabled = (enabled) => {
+  const adFormDisabled = document.querySelector('.ad-form');
+  if (enabled) {
     adFormDisabled.classList.remove('ad-form--disabled');
-    fielsetForm.classList.remove('disabled');
-  });
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.remove('disabled');
+    });
+  } else {
+    adFormDisabled.classList.add('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.add('disabled');
+    });
+  }
 };
 
-const getActiveFilter = (selectFilter) => {
-  mapFilterDisabled.addEventListener('mouseover', () => {
-    mapFilterDisabled.classList.remove('ad-form--disabled');
-    selectFilter.classList.remove('disabled');
-  });
-};
 const generateError = (text) => {
   const error = document.createElement('div');
   error.className = 'error';
@@ -95,4 +85,4 @@ roomsSelect.addEventListener('input', () => {
   roomsSelect.reportValidity();
 });
 
-export {getActiveForm, getActiveFilter};
+export {setAdFormEnabled};
