@@ -13,6 +13,21 @@ const offerTitle = document.querySelector('#title');
 const offerPrice = document.querySelector('#price');
 const roomsSelect = document.querySelector('#room__number');
 
+const setAdFormEnabled = (enabled) => {
+  const adFormDisabled = document.querySelector('.ad-form');
+  if (enabled) {
+    adFormDisabled.classList.remove('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.remove('disabled');
+    });
+  } else {
+    adFormDisabled.classList.add('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.add('disabled');
+    });
+  }
+};
+
 const generateError = (text) => {
   const error = document.createElement('div');
   error.className = 'error';
@@ -70,3 +85,4 @@ roomsSelect.addEventListener('input', () => {
   roomsSelect.reportValidity();
 });
 
+export {setAdFormEnabled};
