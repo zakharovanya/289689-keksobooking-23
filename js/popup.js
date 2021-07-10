@@ -1,4 +1,3 @@
-const similarListElement = document.querySelector('.map__canvas');
 const popupTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 const updateFeatures = (offerFeatures, popupFeaturesList) => {
@@ -50,5 +49,5 @@ export const showPopup = ({author, offer}) => {
   }
   updatePhotos(offer.photos, popup.querySelector('.popup__photos'));
 
-  similarListElement.appendChild(popup);
+  return popup;
 };
