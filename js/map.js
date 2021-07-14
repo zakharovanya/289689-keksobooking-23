@@ -1,22 +1,22 @@
 import {showPopup} from './popup.js';
 
+const DISABLED_CLASS = 'map__filters--disabled';
+
 const MARKER_ICON = {
   iconUrl: '../img/main-pin.svg',
   iconSize: [25, 41],
   iconAnchor: [12.5, 41],
 };
 
-const MAP_LOCATION = {
+const DEFAULT_MAP_LOCATION = {
   lat: 35.6894,
   lng: 139.692,
 };
 
 const MAP_SCALE = 10;
 
-const DISABLED_CLASS = 'map__filters--disabled';
-
 const map = L.map('map-canvas')
-  .setView(MAP_LOCATION, MAP_SCALE);
+  .setView(DEFAULT_MAP_LOCATION, MAP_SCALE);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -29,7 +29,7 @@ const mapLoad = L.map('map-canvas').on('load');
 
 const markerGroup = L.layerGroup().addTo(map);
 
-export const createMarker = (offer) => {
+export const renderMarkers = (offer) => {
   const {lat, lng} = offer;
 
   const icon = L.icon(MARKER_ICON);
