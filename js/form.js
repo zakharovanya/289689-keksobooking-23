@@ -1,3 +1,6 @@
+import {showAlert, onSuccess} from './util.js';
+import {sendData} from './api.js';
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE_LENGHT = 1000000;
@@ -13,7 +16,7 @@ const offerTitle = document.querySelector('#title');
 const offerPrice = document.querySelector('#price');
 const roomsSelect = document.querySelector('#room__number');
 
-const setAdFormEnabled = (enabled) => {
+export const setAdFormEnabled = (enabled) => {
   const adFormDisabled = document.querySelector('.ad-form');
   if (enabled) {
     adFormDisabled.classList.remove('ad-form--disabled');
@@ -85,4 +88,14 @@ roomsSelect.addEventListener('input', () => {
   roomsSelect.reportValidity();
 });
 
-export {setAdFormEnabled};
+const formButton = document.querySelector('.ad-form__submit');
+export const setOfferFormSubmit = () => {
+  formButton.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    sendData(
+      () => onSuccess('Ваше объявление успешно размещено!'),
+      () => showAlert('Не удалось отправить форму. Попробуйте ещё раз'),
+      new FormData(evt.target),
+    );
+  });
+};
