@@ -15,6 +15,8 @@ const MinPriceOfType = {
 const offerTitle = document.querySelector('#title');
 const offerPrice = document.querySelector('#price');
 const roomsSelect = document.querySelector('#room__number');
+const checkIn = document.querySelector('#timein');
+const checkOut = document.querySelector('#timeout');
 
 export const setAdFormEnabled = (enabled) => {
   const adFormDisabled = document.querySelector('.ad-form');
@@ -52,7 +54,7 @@ offerTitle.addEventListener('input', () => {
   offerTitle.reportValidity();
 });
 
-offerPrice.addEventListener('input', () => {
+offerPrice.addEventListener('change', () => {
   for (const type in MinPriceOfType) {
     offerPrice.getElementById('price').placeholder = MinPriceOfType[type];
     if (!offerPrice.value) {
@@ -71,7 +73,7 @@ offerPrice.addEventListener('input', () => {
   offerPrice.reportValidity();
 });
 
-roomsSelect.addEventListener('input', () => {
+roomsSelect.addEventListener('change', () => {
   const roomValue = roomsSelect.querySelectorAll('option').value;
   const capacitySelect = document.querySelector('#capacity');
   const capacityValue = capacitySelect.querySelectorAll('option').value;
@@ -86,6 +88,22 @@ roomsSelect.addEventListener('input', () => {
     roomValue[i].remove();
   }
   roomsSelect.reportValidity();
+});
+
+checkIn.addEventListener('change', () => {
+  const checkInOption = checkIn.querySelector('option');
+  const checkOutOption = checkOut.querySelector('option');
+  const checkInValue = checkInOption.value;
+  const checkOutValue = checkOutOption.value;
+  if (!checkInOption.value) {
+    checkOutOption.disabled = true;
+    checkOutOption.setCustomValidity('Выберите время заезда');
+  } else if (checkInValue !== checkOutValue) {
+    checkIn.setCustomValidity(`Если время заезда после (${  checkInValue }) то время выезда должно быть до (${checkOutValue})`);
+  } else {
+    checkIn.setCustomValidity('');
+  }
+  checkIn.reportValidity();
 });
 
 const formButton = document.querySelector('.ad-form__submit');
