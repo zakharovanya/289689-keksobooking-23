@@ -62,8 +62,6 @@ L.tileLayer(
   },
 ).addTo(map);
 
-const mapLoad = L.map('map-canvas').on('load');
-
 const markerGroup = L.layerGroup().addTo(map);
 
 export const renderMarkers = (offer) => {
@@ -91,20 +89,7 @@ export const renderMarkers = (offer) => {
     );
 };
 
-//--
-const articles = document.querySelectorAll('.news-block');
 const mapFilter = document.querySelector('.map__filters');
-
-mapFilter.onchange = () => {
-  for (const article of articles) {
-    if (article.dataset.category !== mapFilter.value && mapFilter.value !== 'all') {
-      article.classList.add('hidden');
-    } else {
-      article.classList.remove('hidden');
-    }
-  }
-};
-//--
 
 const housingType = mapFilter.querySelector('#housing-type');
 const housingTypeOption = mapFilter.querySelector('[name="housing-type"]');
@@ -122,7 +107,7 @@ const housingFeatures = mapFilter.querySelector('#housing-features');
 const housingFeaturesInput = mapFilter.querySelector('[name="housing-guests"]');
 
 export const setTypeChange = () => {
-  housingType.addEventListener('onchange', (evt) => {
+  housingType.addEventListener('change', (evt) => {
     const selectHouseType = MapFilter.HOUSE_TYPE;
     evt.target.value = selectHouseType;
     housingTypeOption.value = selectHouseType;
@@ -163,15 +148,15 @@ export const setFeaturesChange = () => {
 
 export const setMapFilterEnabled = () => {
   const mapFilterDisabled = document.querySelector('.map__filters');
-  if (mapLoad) {
-    mapFilterDisabled.classList.remove(DISABLED_CLASS);
-    mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
-      selectFilter.classList.remove('disabled');
-    });
-  } else {
+  if (!(L.map('map-canvas').on('load'))) {
     mapFilterDisabled.classList.add(DISABLED_CLASS);
     mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
       selectFilter.classList.add('disabled');
+    });
+  } else {
+    mapFilterDisabled.classList.remove(DISABLED_CLASS);
+    mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
+      selectFilter.classList.remove('disabled');
     });
   }
 };

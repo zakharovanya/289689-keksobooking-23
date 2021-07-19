@@ -1,7 +1,7 @@
-import {setUserFormSubmit, setAdFormEnabled} from './form.js';
 import {renderMarkers, setMapFilterEnabled, setTypeChange, setPriceChange, setRoomsChange, setGuestsChange, setFeaturesChange} from'./map.js';
 import {showPopup} from './popup.js';
 import {getData} from './api.js';
+import {setOfferFormSubmit, clearForm, setAdFormEnabled} from './form.js';
 
 const OFFERS_COUNT = 10;
 const RERENDER_DELAY = 500;
@@ -21,6 +21,6 @@ offers.slice(0, 11).forEach((offer) => {
   renderMarkers(offer);
 });
 
-setUserFormSubmit();
+setOfferFormSubmit(clearForm);
 setAdFormEnabled(false);
 setMapFilterEnabled(false);

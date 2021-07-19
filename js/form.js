@@ -15,20 +15,20 @@ const MinPriceOfType = {
 const offerTitle = document.querySelector('#title');
 const offerPrice = document.querySelector('#price');
 const roomsSelect = document.querySelector('#room__number');
-const checkIn = document.querySelector('#timein');
-const checkOut = document.querySelector('#timeout');
+const selectToSyncTime = document.getElementById('timein');
+const formButton = document.querySelector('.ad-form__submit');
 
-export const setAdFormEnabled = (enabled) => {
+export const setAdFormEnabled = () => {
   const adFormDisabled = document.querySelector('.ad-form');
-  if (enabled) {
-    adFormDisabled.classList.remove('ad-form--disabled');
-    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
-      fielsetForm.classList.remove('disabled');
-    });
-  } else {
+  if (!L.map('map-canvas').on('load')) {
     adFormDisabled.classList.add('ad-form--disabled');
     adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
       fielsetForm.classList.add('disabled');
+    });
+  } else {
+    adFormDisabled.classList.remove('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.remove('disabled');
     });
   }
 };
@@ -53,6 +53,68 @@ offerTitle.addEventListener('input', () => {
   }
   offerTitle.reportValidity();
 });
+
+
+const syncTime = (checkin, checkout) => {
+  if (!checkin) {
+    return false;
+  }
+  else {
+    const checkinValue = checkin.value;
+    const checkoutSync = document.getElementById(checkout);
+    const checkoutOptions = checkoutSync.getElementsByTagName('option');
+    for (let i = 0, checkoutLength = checkoutOptions.length; i < checkoutLength; i++) {
+      if (checkoutOptions[i].value === checkinValue) {
+        checkoutOptions[i].selected = true;
+      }
+    }
+  }
+};
+
+selectToSyncTime.onchange = () => {
+  syncTime(this,'timeout');
+};
+
+export const setOfferFormSubmit = () => {
+  formButton.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    sendData(
+      () => onSuccess('Ваше объявление успешно размещено!'),
+      () => showAlert('Не удалось отправить форму. Попробуйте ещё раз'),
+      new FormData(evt.target),
+    );
+  });
+};
+
+export const clearForm = (adFormElement) => {
+  const formElements = adFormElement.elements;
+  adFormElement.reset();
+  for (let i = 0; i < formElements.length; i++) {
+    const formFieldType = formElements[i].type.toLowerCase();
+    switch(formFieldType) {
+      case 'text':
+      case 'textarea':
+      case 'hidden':
+        formElements[i].value = '';
+        break;
+
+      case 'radio':
+      case 'checkbox':
+        if (formElements[i].checked) {
+          formElements[i].checked = false;
+        }
+        break;
+
+      case 'select-one':
+      case 'select-multi':
+        formElements[i].selectedIndex = -1;
+        break;
+
+      default:
+        break;
+    }
+  }
+};
 
 offerPrice.addEventListener('change', () => {
   for (const type in MinPriceOfType) {
@@ -89,31 +151,3 @@ roomsSelect.addEventListener('change', () => {
   }
   roomsSelect.reportValidity();
 });
-
-checkIn.addEventListener('change', () => {
-  const checkInOption = checkIn.querySelector('option');
-  const checkOutOption = checkOut.querySelector('option');
-  const checkInValue = checkInOption.value;
-  const checkOutValue = checkOutOption.value;
-  if (!checkInOption.value) {
-    checkOutOption.disabled = true;
-    checkOutOption.setCustomValidity('Выберите время заезда');
-  } else if (checkInValue !== checkOutValue) {
-    checkIn.setCustomValidity(`Если время заезда после (${  checkInValue }) то время выезда должно быть до (${checkOutValue})`);
-  } else {
-    checkIn.setCustomValidity('');
-  }
-  checkIn.reportValidity();
-});
-
-const formButton = document.querySelector('.ad-form__submit');
-export const setOfferFormSubmit = () => {
-  formButton.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    sendData(
-      () => onSuccess('Ваше объявление успешно размещено!'),
-      () => showAlert('Не удалось отправить форму. Попробуйте ещё раз'),
-      new FormData(evt.target),
-    );
-  });
-};
