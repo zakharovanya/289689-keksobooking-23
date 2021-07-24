@@ -1,59 +1,31 @@
 import {showPopup} from './popup.js';
+import {compareOffers} from './filter.js';
+
+'use strict';
 
 const DISABLED_CLASS = 'map__filters--disabled';
+const OFFERS_COUNT = 10;
+const MAIN_ICON_URL = './img/main-pin.svg';
+const MAIN_ICON_SIZES = [25, 41];
+const MAIN_ANCHOR_SIZES = [12.5, 41];
+const MAP_SCALE = 12;
 
-const MARKER_ICON = {
-  iconUrl: '../img/main-pin.svg',
-  iconSize: [25, 41],
-  iconAnchor: [12.5, 41],
+const DefaultMapLocation = {
+  LAT: 35.6894,
+  LNG: 139.692,
 };
 
-const DEFAULT_MAP_LOCATION = {
-  lat: 35.6894,
-  lng: 139.692,
-};
-
-const MAP_SCALE = 10;
-
-const MapFilter = {
-  HOUSE_TYPE: [
-    'any',
-    'bungalow',
-    'flat',
-    'hotel',
-    'house',
-    'palace',
-  ],
-  HOUSE_PRICE: [
-    'any',
-    'middle',
-    'low',
-    'high',
-  ],
-  HOUSE_ROOMS: [
-    'any',
-    '1',
-    '2',
-    '3',
-  ],
-  HOUSE_GUESTS: [
-    'any',
-    '2',
-    '1',
-    '0',
-  ],
-  HOUSE_FEATURES: [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner',
-  ],
-};
+const housingType = document.getElementById('housing-type');
+const pricesValue = document.getElementById('housing-price');
+const roomsNumbers = document.getElementById('housing-rooms');
+const guestsNumbers = document.getElementById('housing-guests');
+const housingFeatures = document.getElementById('housing-features');
 
 const map = L.map('map-canvas')
-  .setView(DEFAULT_MAP_LOCATION, MAP_SCALE);
+  .setView({
+    lat: DefaultMapLocation.LAT,
+    lng: DefaultMapLocation.LNG,
+  }, MAP_SCALE);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -64,91 +36,88 @@ L.tileLayer(
 
 const markerGroup = L.layerGroup().addTo(map);
 
-export const renderMarkers = (offer) => {
-  const {lat, lng} = offer;
-
-  const icon = L.icon(MARKER_ICON);
-
-  const marker = L.marker(
-    {
-      lat,
-      lng,
-    },
-    {
-      icon,
-    },
-  );
-
-  marker
-    .addTo(markerGroup)
-    .bindPopup(
-      showPopup(offer),
-      {
-        keepInView: true,
-      },
-    );
+export const createMarkers = (offers) => {
+  offers
+    .slice()
+    .sort(compareOffers)
+    .slice(0, OFFERS_COUNT)
+    .forEach((offer) => {
+      const {lat, lng} = offer.location;
+      const icon = L.icon({
+        iconUrl: MAIN_ICON_URL,
+        iconSize: MAIN_ICON_SIZES,
+        iconAnchor: MAIN_ANCHOR_SIZES,
+      });
+      const marker = L.marker(
+        {
+          lat,
+          lng,
+        },
+        {
+          icon,
+        },
+      );
+      marker
+        .addTo(markerGroup)
+        .bindPopup(
+          showPopup(offer),
+          {
+            keepInView: true,
+          },
+        );
+    });
 };
 
-const mapFilter = document.querySelector('.map__filters');
-
-const housingType = mapFilter.querySelector('#housing-type');
-const housingTypeOption = mapFilter.querySelector('[name="housing-type"]');
-
-const pricesValue = mapFilter.querySelector('#housing-price');
-const priceValueOption = mapFilter.querySelector('[name="housing-price"]');
-
-const roomsNumbers = mapFilter.querySelector('#housing-rooms');
-const roomsNumbersOption = mapFilter.querySelector('[name="housing-rooms"]');
-
-const guestsNumbers = mapFilter.querySelector('#housing-guests');
-const guestsNumbersOption = mapFilter.querySelector('[name="housing-guests"]');
-
-const housingFeatures = mapFilter.querySelector('#housing-features');
-const housingFeaturesInput = mapFilter.querySelector('[name="housing-guests"]');
-
-export const setTypeChange = () => {
-  housingType.addEventListener('change', (evt) => {
-    const selectHouseType = MapFilter.HOUSE_TYPE;
+export const setTypeChange = (callback) => {
+  housingType.onchange = function (evt) {
+    markerGroup.clearLayers();
+    const selectHouseType = housingType.value;
     evt.target.value = selectHouseType;
-    housingTypeOption.value = selectHouseType;
-  });
+    callback();
+  };
 };
 
-export const setPriceChange = () => {
-  pricesValue.addEventListener('change', (evt) => {
-    const selectHousePrice = MapFilter.HOUSE_PRICE;
+export const setPriceChange = (callback) => {
+  pricesValue.onchange = function (evt) {
+    markerGroup.clearLayers();
+    const selectHousePrice = pricesValue.value;
     evt.target.value = selectHousePrice;
-    priceValueOption.value = selectHousePrice;
-  });
+    callback();
+  };
 };
 
-export const setRoomsChange = () => {
-  roomsNumbers.addEventListener('change', (evt) => {
-    const selectHouseRoom = MapFilter.HOUSE_ROOMS;
+export const setRoomsChange = (callback) => {
+  roomsNumbers.onchange = function (evt) {
+    markerGroup.clearLayers();
+    const selectHouseRoom = roomsNumbers.value;
     evt.target.value = selectHouseRoom;
-    roomsNumbersOption.value = selectHouseRoom;
-  });
+    callback();
+  };
 };
 
-export const setGuestsChange = () => {
-  guestsNumbers.addEventListener('change', (evt) => {
-    const selectHouseGuests = MapFilter.HOUSE_GUESTS;
+export const setGuestsChange = (callback) => {
+  guestsNumbers.onchange = function (evt) {
+    markerGroup.clearLayers();
+    const selectHouseGuests = guestsNumbers.value;
     evt.target.value = selectHouseGuests;
-    guestsNumbersOption.value = selectHouseGuests;
-  });
+    callback();
+  };
 };
 
-export const setFeaturesChange = () => {
-  housingFeatures.addEventListener('change', (evt) => {
-    const selectHouseFeatures = MapFilter.HOUSE_GUESTS;
+export const setFeaturesChange = (callback) => {
+  housingFeatures.onchange = function (evt) {
+    markerGroup.clearLayers();
+    const selectHouseFeatures = housingFeatures.value;
     evt.target.value = selectHouseFeatures;
-    housingFeaturesInput.value = selectHouseFeatures;
-  });
+    callback();
+  };
 };
+
+const enabled = map.on('load');
 
 export const setMapFilterEnabled = () => {
   const mapFilterDisabled = document.querySelector('.map__filters');
-  if (!(L.map('map-canvas').on('load'))) {
+  if (!enabled) {
     mapFilterDisabled.classList.add(DISABLED_CLASS);
     mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
       selectFilter.classList.add('disabled');
@@ -157,6 +126,21 @@ export const setMapFilterEnabled = () => {
     mapFilterDisabled.classList.remove(DISABLED_CLASS);
     mapFilterDisabled.querySelectorAll('select').forEach((selectFilter) => {
       selectFilter.classList.remove('disabled');
+    });
+  }
+};
+
+export const setAdFormEnabled = () => {
+  const adFormDisabled = document.querySelector('.ad-form');
+  if (!enabled) {
+    adFormDisabled.classList.add('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.add('disabled');
+    });
+  } else {
+    adFormDisabled.classList.remove('ad-form--disabled');
+    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
+      fielsetForm.classList.remove('disabled');
     });
   }
 };

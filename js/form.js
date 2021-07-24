@@ -1,5 +1,7 @@
-import {showAlert, onSuccess} from './util.js';
+import {showAlert, onSuccessAlert} from './util.js';
 import {sendData} from './api.js';
+
+'use strict';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -12,34 +14,13 @@ const MinPriceOfType = {
   PALACE: 10000,
 };
 
-const offerTitle = document.querySelector('#title');
-const offerPrice = document.querySelector('#price');
-const roomsSelect = document.querySelector('#room__number');
+const offerForm = document.querySelector('.ad-form');
+const offerTitle = offerForm.querySelector('#title');
 const selectToSyncTime = document.getElementById('timein');
-const formButton = document.querySelector('.ad-form__submit');
-
-export const setAdFormEnabled = () => {
-  const adFormDisabled = document.querySelector('.ad-form');
-  if (!L.map('map-canvas').on('load')) {
-    adFormDisabled.classList.add('ad-form--disabled');
-    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
-      fielsetForm.classList.add('disabled');
-    });
-  } else {
-    adFormDisabled.classList.remove('ad-form--disabled');
-    adFormDisabled.querySelectorAll('fieldset').forEach((fielsetForm) => {
-      fielsetForm.classList.remove('disabled');
-    });
-  }
-};
-
-const generateError = (text) => {
-  const error = document.createElement('div');
-  error.className = 'error';
-  error.style.color = 'red';
-  error.innerHTML = text;
-  return error;
-};
+const selectToSyncRooms = document.getElementById('room_number');
+const selectedToSyncType = document.getElementById('type');
+const formButton = offerForm.querySelector('.ad-form__submit');
+const formButtonReset = offerForm.querySelector('.ad-form__reset');
 
 offerTitle.addEventListener('input', () => {
   const valueTitleLength = offerTitle.value.length;
@@ -55,31 +36,78 @@ offerTitle.addEventListener('input', () => {
 });
 
 
-const syncTime = (checkin, checkout) => {
-  if (!checkin) {
+const getSyncSelect = (base, compare) => {
+  if (!base) {
     return false;
   }
   else {
-    const checkinValue = checkin.value;
-    const checkoutSync = document.getElementById(checkout);
-    const checkoutOptions = checkoutSync.getElementsByTagName('option');
-    for (let i = 0, checkoutLength = checkoutOptions.length; i < checkoutLength; i++) {
-      if (checkoutOptions[i].value === checkinValue) {
-        checkoutOptions[i].selected = true;
+    const baseValue = base.value;
+    const compareSync = document.getElementById(compare);
+    const compareOptions = compareSync.getElementsByTagName('option');
+    for (let i = 0, compareLength = compareOptions.length; i < compareLength; i++) {
+      compareOptions[i].disabled = true;
+      if (compareOptions[i].value <= baseValue) {
+        compareOptions[i].disabled = false;
+        compareOptions[i].selected = true;
       }
     }
   }
 };
 
-selectToSyncTime.onchange = () => {
-  syncTime(this,'timeout');
+selectToSyncTime.onchange = function () {
+  getSyncSelect(this,'timeout');
 };
 
-export const setOfferFormSubmit = () => {
+selectToSyncRooms.onchange = function () {
+  getSyncSelect(this,'capacity');
+};
+
+const getValidPrice = (type) => {
+  const priceInput = document.querySelector('#price');
+  priceInput.addEventListener('input', () => {
+    const priceValue = priceInput.value;
+    //const minPrice = priceInput.min = priceValue;
+    if (priceValue < type) {
+      priceInput.setCustomValidity(`Цена должна быть выше минимальной ${type}`);
+    } else if (priceValue > MAX_PRICE_LENGHT) {
+      priceInput.setCustomValidity(`Цена не должна превышать ${MAX_PRICE_LENGHT}`);
+    } else {
+      priceInput.setCustomValidity('');
+    }
+    priceInput.reportValidity();
+  });
+};
+
+selectedToSyncType.onchange = function () {
+  const optionsValue = this.options[this.selectedIndex].value;
+  if (optionsValue === 'bungalow') {
+    document.getElementById('price').value = MinPriceOfType.BUNGALOW;
+    document.getElementById('price').min = MinPriceOfType.BUNGALOW;
+    getValidPrice(MinPriceOfType.BUNGALOW);
+  } else if (optionsValue === 'flat') {
+    document.getElementById('price').value = MinPriceOfType.FLAT;
+    document.getElementById('price').min = MinPriceOfType.FLAT;
+    getValidPrice(MinPriceOfType.FLAT);
+  } else if (optionsValue === 'hotel') {
+    document.getElementById('price').value = MinPriceOfType.HOTEL;
+    document.getElementById('price').min = MinPriceOfType.HOTEL;
+    getValidPrice(MinPriceOfType.HOTEL);
+  } else if (optionsValue === 'house') {
+    document.getElementById('price').value = MinPriceOfType.HOUSE;
+    document.getElementById('price').min = MinPriceOfType.HOUSE;
+    getValidPrice(MinPriceOfType.HOUSE);
+  } else if (optionsValue === 'palace') {
+    document.getElementById('price').value = MinPriceOfType.PALACE;
+    document.getElementById('price').min = MinPriceOfType.PALACE;
+    getValidPrice(MinPriceOfType.PALACE);
+  }
+};
+
+export const setOfferFormSubmit = (onSuccess) => {
   formButton.addEventListener('submit', (evt) => {
     evt.preventDefault();
     sendData(
-      () => onSuccess('Ваше объявление успешно размещено!'),
+      () => onSuccess(onSuccessAlert('Ваше объявление успешно размещено!')),
       () => showAlert('Не удалось отправить форму. Попробуйте ещё раз'),
       new FormData(evt.target),
     );
@@ -116,38 +144,7 @@ export const clearForm = (adFormElement) => {
   }
 };
 
-offerPrice.addEventListener('change', () => {
-  for (const type in MinPriceOfType) {
-    offerPrice.getElementById('price').placeholder = MinPriceOfType[type];
-    if (!offerPrice.value) {
-      const error = generateError('Цена не указана');
-      offerPrice.parentElement.insertBefore(error, offerPrice);
-    } else if (offerPrice.value < MinPriceOfType[type]) {
-      const error = generateError(`Цена должна быть выше ${(MinPriceOfType[type])}`);
-      offerPrice.parentElement.insertBefore(error, offerPrice);
-    } else if (offerPrice.value < MAX_PRICE_LENGHT) {
-      const error = generateError(`Цена должна быть ниже ${MAX_PRICE_LENGHT}`);
-      offerPrice.parentElement.insertBefore(error, offerPrice);
-    } else {
-      offerPrice.setCustomValidity('');
-    }
-  }
-  offerPrice.reportValidity();
-});
-
-roomsSelect.addEventListener('change', () => {
-  const roomValue = roomsSelect.querySelectorAll('option').value;
-  const capacitySelect = document.querySelector('#capacity');
-  const capacityValue = capacitySelect.querySelectorAll('option').value;
-  capacityValue.disabled = true;
-  for (const i = 0; i <= 100;) {
-    if (roomValue[i] <= capacityValue[i]) {
-      capacityValue.disabled = false;
-    } else {
-      const error = generateError('Число гостей не должно превышать число комнат');
-      roomValue.parentElement.insertBefore(error, roomValue);
-    }
-    roomValue[i].remove();
-  }
-  roomsSelect.reportValidity();
+formButtonReset.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  clearForm();
 });

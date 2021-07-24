@@ -1,26 +1,22 @@
-import {renderMarkers, setMapFilterEnabled, setTypeChange, setPriceChange, setRoomsChange, setGuestsChange, setFeaturesChange} from'./map.js';
-import {showPopup} from './popup.js';
+import {createMarkers, setMapFilterEnabled, setAdFormEnabled, setTypeChange, setPriceChange, setRoomsChange, setGuestsChange, setFeaturesChange} from'./map.js';
 import {getData} from './api.js';
-import {setOfferFormSubmit, clearForm, setAdFormEnabled} from './form.js';
+import {debounce} from './util.js';
+import {setOfferFormSubmit, clearForm} from './form.js';
 
-const OFFERS_COUNT = 10;
+'use strict';
+
 const RERENDER_DELAY = 500;
 
-const offers = new Array(OFFERS_COUNT).fill(null).map();
+setAdFormEnabled(true);
+setMapFilterEnabled(true);
 
-getData(() => {
-  showPopup(offers);
-  setTypeChange(_.debounce(() => showPopup(offers), RERENDER_DELAY));
-  setPriceChange(_.debounce(() => showPopup(offers), RERENDER_DELAY));
-  setRoomsChange(_.debounce(() => showPopup(offers), RERENDER_DELAY));
-  setGuestsChange(_.debounce(() => showPopup(offers), RERENDER_DELAY));
-  setFeaturesChange(_.debounce(() => showPopup(offers), RERENDER_DELAY));
-});
-
-offers.slice(0, 11).forEach((offer) => {
-  renderMarkers(offer);
+getData((offers) => {
+  createMarkers(offers);
+  setTypeChange(debounce(() => createMarkers(offers), RERENDER_DELAY));
+  setPriceChange(debounce(() => createMarkers(offers), RERENDER_DELAY));
+  setRoomsChange(debounce(() => createMarkers(offers), RERENDER_DELAY));
+  setGuestsChange(debounce(() => createMarkers(offers), RERENDER_DELAY));
+  setFeaturesChange(debounce(() => createMarkers(offers), RERENDER_DELAY));
 });
 
 setOfferFormSubmit(clearForm);
-setAdFormEnabled(false);
-setMapFilterEnabled(false);
